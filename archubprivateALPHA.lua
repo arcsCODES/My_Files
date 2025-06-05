@@ -460,18 +460,54 @@ ScriptSection:CreateToggle({
 })
 
 local S2Section = ScriptTab:CreateSection({
-    Name = "Main scripts",
+    Name = "Other scripts",
     Visible = true,
     LayoutOrder = 9,
     Callback = function(self) end,
 })
 
 S2Section:CreateButton({
-    Name = "CMOON HBE",
+    Name = "ARC'S UTILITY",
     Initial = false,
     LayoutOrder = 1,
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/arcsCODES/RobloxScripts-STANDSAWAKENING/refs/heads/main/SA_UTILITY.lua",true))()
+    end,
+})
+
+S2Section:CreateButton({
+    Name = "INF YIELD",
+    Initial = false,
+    LayoutOrder = 2,
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"))()
+    end,
+})
+
+S2Section:CreateButton({
+    Name = "TP LOOP LIKOD SA PLAYER",
+    Initial = false,
+    LayoutOrder = 3,
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/arcsCODES/RobloxScripts-UNIVERSAL/refs/heads/main/FollowPlayersBack.lua",true))()
+    end,
+})
+
+S2Section:CreateButton({
+    Name = "PLAYER TELEPORTASYON",
+    Initial = false,
+    LayoutOrder = 4,
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/arcsCODES/RobloxScripts-UNIVERSAL/refs/heads/main/PlayerTeleportation.lua"))()
+    end,
+})
+
+S2Section:CreateButton({
+    Name = "GET COORDINATES",
+    Initial = false,
+    LayoutOrder = 5,
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/arcsCODES/RobloxScripts-STANDSAWAKENING/refs/heads/main/GetCoordinatesScript.lua"))()
     end,
 })
 
