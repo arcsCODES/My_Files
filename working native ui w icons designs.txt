@@ -1,0 +1,110 @@
+-- Load Native UI Library
+local Library = (getgenv and getgenv().NATIVELIBRARY) or loadstring(game:HttpGet("https://getnative.cc/script/interface", true))()
+getgenv().NATIVELIBRARY = Library
+
+-- Services
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+-- UI Init
+local Init = Library:Init({
+    Name = "Arc's Native Hub",
+    Parent = game:GetService("CoreGui"),
+    Callback = function(self) end,
+})
+
+-- Main Window
+local Window = Init:CreateWindow({
+    Name = "Arc's Hub | SA (v1.0)",
+    Visible = true,
+    Silent = false,
+    Asset = true, -- Enables advanced theming and icons if supported
+    Keybind = Enum.KeyCode.RightShift,
+    Callback = function(self) end,
+})
+
+-- Scripts Tab (Main)
+local ScriptTab = Window:CreateTab({
+    Name = "Scripts",
+    Icon = "rbxassetid://7733960981", -- Script icon
+    LayoutOrder = 1,
+    Home = true,
+    Callback = function(self) end,
+})
+
+local ScriptSection = ScriptTab:CreateSection({
+    Name = "Main Features",
+    Visible = true,
+    LayoutOrder = 1,
+    Callback = function(self) end,
+})
+
+-- 15s Timestop Toggle
+local timestopConnection
+
+ScriptSection:CreateToggle({
+    Name = "🕒 15s Timestop (Press Left Ctrl)",
+    Initial = false,
+    LayoutOrder = 1,
+    Value = false,
+    Callback = function(self, state)
+        if state then
+            timestopConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+                if not gameProcessed and input.KeyCode == Enum.KeyCode.LeftControl then
+                    local args = {15, "jotaroova"}
+                    local success, err = pcall(function()
+                        ReplicatedStorage:WaitForChild("Main"):WaitForChild("Timestop"):FireServer(unpack(args))
+                    end)
+                    if success then
+                        print("Timestop activated via CTRL")
+                    else
+                        warn("Timestop failed: " .. tostring(err))
+                    end
+                end
+            end)
+            print("Timestop enabled - Press Left Control to activate")
+        else
+            if timestopConnection then
+                timestopConnection:Disconnect()
+                timestopConnection = nil
+            end
+            print("Timestop disabled")
+        end
+    end,
+})
+
+-- Placeholder Toggle
+ScriptSection:CreateToggle({
+    Name = "🧪 Test Toggle",
+    Initial = false,
+    LayoutOrder = 2,
+    Value = false,
+    Callback = function(self, state)
+        print("Toggle is", state and "On" or "Off")
+    end,
+})
+
+-- HBE Tab (Example of another section)
+local HBETab = Window:CreateTab({
+    Name = "HBE",
+    Icon = "rbxassetid://7733911821", -- Lightning or fire icon
+    LayoutOrder = 2,
+    Callback = function(self) end,
+})
+
+local HBESection = HBETab:CreateSection({
+    Name = "Stand Scripts",
+    Visible = true,
+    LayoutOrder = 1,
+    Callback = function(self) end,
+})
+
+HBESection:CreateButton({
+    Name = "⚡ Use HBE Star Platinum",
+    LayoutOrder = 1,
+    Callback = function()
+        loadstring(game:HttpGet("https://your-hbe-script-url.com"))()
+    end,
+})
