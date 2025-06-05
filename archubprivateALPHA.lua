@@ -87,61 +87,44 @@ ScriptSection:CreateToggle({
 -- TIMESTOP MOVEMENT
 --------------------------------------------------
 
-local moveLoopConnection = nil
+local moveLoopActive = false
 
--- Recursively collect all BaseParts from a model or folder
-local function collectParts(instance)
+local function collectParts(parent)
     local parts = {}
-    for _, descendant in ipairs(instance:GetDescendants()) do
-        if descendant:IsA("BasePart") then
-            table.insert(parts, descendant)
+    for _, child in ipairs(parent:GetChildren()) do
+        if child:IsA("BasePart") then
+            table.insert(parts, child)
+        end
+        for _, grandChild in ipairs(child:GetChildren()) do
+            if grandChild:IsA("BasePart") then
+                table.insert(parts, grandChild)
+            end
         end
     end
     return parts
 end
 
--- Anchors or unanchors a list of parts using the Anchor remote
-local function setAnchored(parts, anchor)
+local function anchorParts(parts, anchor)
     for _, part in ipairs(parts) do
-        pcall(function()
-            AnchorRemote:FireServer(part, anchor)
-        end)
+        game:GetService("ReplicatedStorage"):WaitForChild("Anchor"):FireServer(part, anchor)
     end
 end
 
--- Activates or deactivates movement bypass loop
-local function toggleMovementBypass(state)
-    if state then
-        moveLoopConnection = RunService.Heartbeat:Connect(function()
-            if LocalPlayer and LocalPlayer.Character then
-                local character = LocalPlayer.Character
-                setAnchored(collectParts(character), false)
-
-                local stand = character:FindFirstChild("Stand")
-                if stand then
-                    setAnchored(collectParts(stand), false)
-                end
-            end
-        end)
-        print("Movement enabled during timestops")
-    else
-        if moveLoopConnection then
-            moveLoopConnection:Disconnect()
-            moveLoopConnection = nil
-        end
-
-        -- Re-anchor parts on toggle off
-        if LocalPlayer and LocalPlayer.Character then
-            local character = LocalPlayer.Character
-            setAnchored(collectParts(character), true)
+local function toggleMovementLoop()
+    while moveLoopActive do
+        local player = game:GetService("Players").LocalPlayer
+        if player and player.Character then
+            local character = player.Character
+            local partsToToggle = collectParts(character)
+            anchorParts(partsToToggle, false)
 
             local stand = character:FindFirstChild("Stand")
             if stand then
-                setAnchored(collectParts(stand), true)
+                local standPartsToToggle = collectParts(stand)
+                anchorParts(standPartsToToggle, false)
             end
         end
-
-        print("Movement disabled during timestops")
+        task.wait(1)
     end
 end
 
@@ -152,7 +135,27 @@ ScriptSection:CreateToggle({
     LayoutOrder = 2,
     Value = false,
     Callback = function(self, state)
-        toggleMovementBypass(state)
+        if state then
+            moveLoopActive = true
+            task.spawn(toggleMovementLoop)
+            print("Movement enabled in timestops")
+        else
+            moveLoopActive = false
+
+            local player = game:GetService("Players").LocalPlayer
+            if player and player.Character then
+                local character = player.Character
+                local partsToToggle = collectParts(character)
+                anchorParts(partsToToggle, true)
+
+                local stand = character:FindFirstChild("Stand")
+                if stand then
+                    local standPartsToToggle = collectParts(stand)
+                    anchorParts(standPartsToToggle, true)
+                end
+            end
+            print("Movement disabled in timestops")
+        end
     end,
 })
 
