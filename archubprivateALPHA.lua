@@ -13,6 +13,7 @@ local RunService = game:GetService("RunService")
 
 local LocalPlayer = Players.LocalPlayer
 local AnchorRemote = ReplicatedStorage:WaitForChild("Anchor")
+local mouse = LocalPlayer:GetMouse()
 
 
 -- UI Init
@@ -462,10 +463,119 @@ ScriptSection:CreateToggle({
     end,
 })
 
+-------------------------------------------
+-- VTW KNIFE
+-------------------------------------------
+local knifeBeganConnection -- For InputBegan
+local knifeEndedConnection -- For InputEnded
+local holdingKnifeConnection -- For Heartbeat
+local isHolding = false -- Flag to track if the key is being held down
+
+local function throwKnife()
+    local targetPosition = mouse.Hit.Position
+    local args = {
+        [1] = "Alternate",
+        [2] = "Knife",
+        [3] = targetPosition
+    }
+    ReplicatedStorage:WaitForChild("Main"):WaitForChild("Input"):FireServer(unpack(args))
+end
+
+ScriptSection:CreateToggle({
+    Name = "VTW KNIFE",
+    Initial = false,
+    LayoutOrder = 9,
+    Value = false,
+    Callback = function(self, state)
+        if state then
+            knifeBeganConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+                if not gameProcessed and input.KeyCode == Enum.KeyCode.One then
+                    if not isHolding then
+                        isHolding = true
+                        holdingKnifeConnection = RunService.Heartbeat:Connect(function()
+                            if isHolding then
+                                throwKnife()
+                            end
+                        end)
+                    end
+                end
+            end)
+            
+            knifeEndedConnection = UserInputService.InputEnded:Connect(function(input, gameProcessed)
+                if not gameProcessed and input.KeyCode == Enum.KeyCode.One then
+                    isHolding = false
+                    if holdingKnifeConnection then
+                        holdingKnifeConnection:Disconnect()
+                        holdingKnifeConnection = nil
+                    end
+                end
+            end)
+
+            print("Knife throw enabled")
+        else
+            if knifeBeganConnection then
+                knifeBeganConnection:Disconnect()
+                knifeBeganConnection = nil
+            end
+            if knifeEndedConnection then
+                knifeEndedConnection:Disconnect()
+                knifeEndedConnection = nil
+            end
+            if holdingKnifeConnection then
+                holdingKnifeConnection:Disconnect()
+                holdingKnifeConnection = nil
+            end
+            isHolding = false
+            print("Knife throw disabled")
+        end
+    end,
+})
+
+-------------------------------------------
+-- STANDLESS COUNTER
+-------------------------------------------
+local counterCoroutine
+
+ScriptSection:CreateToggle({
+    Name = "STANDLESS COUNTER",
+    Initial = false,
+    LayoutOrder = 10,
+    Value = false,
+    Callback = function(self, state)
+        local args = {"Alternate", "Counter"}
+        local main = ReplicatedStorage:WaitForChild("Main")
+        local input = main:WaitForChild("Input")
+
+        local function counterLoop()
+            while state do
+                input:FireServer(unpack(args))
+                wait(0.5)
+            end
+        end
+
+        if state then
+            if counterCoroutine then
+                counterCoroutine = nil
+            end
+            counterCoroutine = coroutine.create(counterLoop)
+            coroutine.resume(counterCoroutine)
+            print("Counter attack of Standless enabled")
+        else
+            counterCoroutine = nil
+            print("Counter attack of Standless disabled")
+        end
+    end,
+})
+
+
+
+-- ==================================================
+-- SECTION 2: OTHER SCRIPTS
+-- ==================================================
 local S2Section = ScriptTab:CreateSection({
     Name = "Other scripts",
     Visible = true,
-    LayoutOrder = 9,
+    LayoutOrder = 11,
     Callback = function(self) end,
 })
 
@@ -511,6 +621,15 @@ S2Section:CreateButton({
     LayoutOrder = 5,
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/arcsCODES/RobloxScripts-STANDSAWAKENING/refs/heads/main/GetCoordinatesScript.lua"))()
+    end,
+})
+
+S2Section:CreateButton({
+    Name = "NAMELESS ADMIN",
+    Initial = false,
+    LayoutOrder = 6,
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/arcsCODES/RobloxScripts-full/refs/heads/main/roblox%20scripts/universal/namelessAdmin.lua"))()
     end,
 })
 
@@ -707,5 +826,33 @@ TSSection:CreateButton({
     Callback = function()
         local args = {15, "diego"}
         game:GetService("ReplicatedStorage"):WaitForChild("Main"):WaitForChild("Timestop"):FireServer(unpack(args))
+    end,
+})
+
+
+
+
+
+
+local SoundTab = Window:CreateTab({
+    Name = "SOUNDS",
+    Icon = "rbxassetid://7734063416", 
+    LayoutOrder = 4,
+    Callback = function(self) end,
+})
+
+local SoundSection = SoundTab:CreateSection({
+    Name = "Main",
+    Visible = true,
+    LayoutOrder = 1,
+    Callback = function(self) end,
+})
+
+SoundSection:CreateButton({
+    Name = "SOUNDS",
+    Initial = false,
+    LayoutOrder = 1,
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/arcsCODES/RobloxScripts-full/refs/heads/main/roblox%20scripts/stands%20awakening/sounds.lua"))()
     end,
 })
