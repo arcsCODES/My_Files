@@ -633,6 +633,15 @@ S2Section:CreateButton({
     end,
 })
 
+S2Section:CreateButton({
+    Name = "AUTO BOSS",
+    Initial = false,
+    LayoutOrder = 7,
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/arcsCODES/RobloxScripts-full/refs/heads/main/roblox%20scripts/stands%20awakening/Boss%20autokill.txt"))()
+    end,
+})
+
 
 
 
@@ -833,10 +842,10 @@ TSSection:CreateButton({
 
 
 
-
+-- SOUND TAB
 local SoundTab = Window:CreateTab({
     Name = "SOUNDS",
-    Icon = "rbxassetid://7734063416", 
+    Icon = "rbxassetid://7743869988", 
     LayoutOrder = 4,
     Callback = function(self) end,
 })
@@ -854,5 +863,114 @@ SoundSection:CreateButton({
     LayoutOrder = 1,
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/arcsCODES/RobloxScripts-full/refs/heads/main/roblox%20scripts/stands%20awakening/sounds.lua"))()
+    end,
+})
+
+
+
+
+
+
+local MapTab = Window:CreateTab({
+    Name = "MAP",
+    Icon = "rbxassetid://7733992829", 
+    LayoutOrder = 5,
+    Callback = function(self) end,
+})
+
+local MapSection = MapTab:CreateSection({
+    Name = "Main",
+    Visible = true,
+    LayoutOrder = 1,
+    Callback = function(self) end,
+})
+
+MapSection:CreateButton({
+    Name = "FARMING ZONE",
+    Initial = false,
+    LayoutOrder = 1,
+    Callback = function()
+        local teleportCoords = Vector3.new(294, 472, -1488)
+
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        humanoidRootPart.CFrame = CFrame.new(teleportCoords)
+    end,
+})
+
+MapSection:CreateButton({
+    Name = "BOSS PORTAL",
+    Initial = false,
+    LayoutOrder = 2,
+    Callback = function()
+        local teleportCoords = Vector3.new(1118, 594, -721.65)
+
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        humanoidRootPart.CFrame = CFrame.new(teleportCoords)
+    end,
+})
+
+MapSection:CreateButton({
+    Name = "RACHAEL'S HOUSE",
+    Initial = false,
+    LayoutOrder = 3,
+    Callback = function()
+        local teleportCoords = Vector3.new(1052, 592, -197)
+
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        humanoidRootPart.CFrame = CFrame.new(teleportCoords)
+    end,
+})
+
+MapSection:CreateButton({
+    Name = "WATERFALL",
+    Initial = false,
+    LayoutOrder = 4,
+    Callback = function()
+        local teleportCoords = Vector3.new(1610, 586, -697)
+
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        humanoidRootPart.CFrame = CFrame.new(teleportCoords)
+    end,
+})
+
+MapSection:CreateButton({
+    Name = "STORAGE",
+    Initial = false,
+    LayoutOrder = 5,
+    Callback = function()
+        local teleportCoords = Vector3.new(1395, 588, -220)
+
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        humanoidRootPart.CFrame = CFrame.new(teleportCoords)
+    end,
+})
+
+MapSection:CreateButton({
+    Name = "MIDDLE",
+    Initial = false,
+    LayoutOrder = 6,
+    Callback = function()
+        local teleportCoords = Vector3.new(1342, 602, -462)
+
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        humanoidRootPart.CFrame = CFrame.new(teleportCoords)
     end,
 })
